@@ -106,12 +106,12 @@ function App() {
           <form onSubmit={handleConvert}>
             <textarea
               id="input"
-              rows={20}
+              rows={30}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               required
               className="form-control bg-dark text-light mb-3"
-              style={{ fontFamily: selectedFont, fontSize: selectedFontSize }}
+              style={{ fontFamily: selectedFont, fontSize: selectedFontSize, height: 'calc(100vh - 300px)' }}
             ></textarea>
             <button type="submit" disabled={loading} className="btn btn-primary">
               {loading ? 'Converting...' : 'Convert'}
@@ -121,7 +121,7 @@ function App() {
         {hasResponse && (
           <div className="col-md-6">
             <h2 className="text-light">Gitpod</h2>
-            <pre className="bg-dark text-light p-3 rounded" style={{ fontFamily: selectedFont, fontSize: selectedFontSize }}>{output}</pre>
+            <pre className="bg-dark text-light p-3 rounded" style={{ fontFamily: selectedFont, fontSize: selectedFontSize, height: 'calc(100vh - 300px)', overflowY: 'auto' }}>{output}</pre>
             <CopyToClipboard text={output}>
               <button className="btn btn-outline-light mt-2">
                 Copy to Clipboard
