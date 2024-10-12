@@ -13,6 +13,10 @@ const codingFonts = [
   'Ubuntu Mono',
 ];
 
+const fontSizes = [
+  '12px', '14px', '16px', '18px', '20px', '22px', '24px'
+];
+
 function App() {
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
@@ -21,6 +25,7 @@ function App() {
   const [showModal, setShowModal] = useState(false);
   const [hasResponse, setHasResponse] = useState(false);
   const [selectedFont, setSelectedFont] = useState('Consolas');
+  const [selectedFontSize, setSelectedFontSize] = useState('16px');
 
   useEffect(() => {
     setOutput('');
@@ -29,6 +34,10 @@ function App() {
 
   const handleFontChange = (e) => {
     setSelectedFont(e.target.value);
+  };
+
+  const handleFontSizeChange = (e) => {
+    setSelectedFontSize(e.target.value);
   };
 
   const handleConvert = async (e) => {
@@ -59,20 +68,37 @@ function App() {
   return (
     <main className="container">
       <h1 className="text-light mb-4">Devcontainer to Gitpod Converter</h1>
-      <div className="mb-3">
-        <label htmlFor="font-select" className="form-label">Select Font: </label>
-        <select
-          id="font-select"
-          value={selectedFont}
-          onChange={handleFontChange}
-          className="form-select bg-dark text-light"
-        >
-          {codingFonts.map((font) => (
-            <option key={font} value={font}>
-              {font}
-            </option>
-          ))}
-        </select>
+      <div className="mb-3 d-flex align-items-center">
+        <div className="me-3">
+          <label htmlFor="font-select" className="form-label me-2">Font:</label>
+          <select
+            id="font-select"
+            value={selectedFont}
+            onChange={handleFontChange}
+            className="form-select bg-dark text-light"
+          >
+            {codingFonts.map((font) => (
+              <option key={font} value={font}>
+                {font}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="font-size-select" className="form-label me-2">Size:</label>
+          <select
+            id="font-size-select"
+            value={selectedFontSize}
+            onChange={handleFontSizeChange}
+            className="form-select bg-dark text-light"
+          >
+            {fontSizes.map((size) => (
+              <option key={size} value={size}>
+                {size}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
       <div className="row">
         <div className="col-md-6 mb-3">
@@ -85,7 +111,7 @@ function App() {
               onChange={(e) => setInput(e.target.value)}
               required
               className="form-control bg-dark text-light mb-3"
-              style={{ fontFamily: selectedFont }}
+              style={{ fontFamily: selectedFont, fontSize: selectedFontSize }}
             ></textarea>
             <button type="submit" disabled={loading} className="btn btn-primary">
               {loading ? 'Converting...' : 'Convert'}
@@ -95,7 +121,7 @@ function App() {
         {hasResponse && (
           <div className="col-md-6">
             <h2 className="text-light">Gitpod</h2>
-            <pre className="bg-dark text-light p-3 rounded" style={{ fontFamily: selectedFont }}>{output}</pre>
+            <pre className="bg-dark text-light p-3 rounded" style={{ fontFamily: selectedFont, fontSize: selectedFontSize }}>{output}</pre>
             <CopyToClipboard text={output}>
               <button className="btn btn-outline-light mt-2">
                 Copy to Clipboard

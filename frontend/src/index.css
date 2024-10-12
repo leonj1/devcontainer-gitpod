@@ -36,12 +36,19 @@ pre {
 
 .font-selector {
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
 }
 
 .font-selector select {
   background-color: #2d2d2d;
   color: #e0e0e0;
   border: 1px solid #444;
+  margin-right: 10px;
+}
+
+.font-selector label {
+  margin-right: 5px;
 }
 
 .modal-content {
