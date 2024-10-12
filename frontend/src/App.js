@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const API_PORT = process.env.REACT_APP_API_PORT || '4343';
@@ -25,8 +24,18 @@ function App() {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.post(API_URL, JSON.parse(input));
-      setOutput(response.data);
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: input,
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.text();
+      setOutput(data);
       setHasResponse(true);
     } catch (err) {
       setError(err.message || 'An error occurred');
