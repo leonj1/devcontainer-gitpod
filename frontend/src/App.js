@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Form, Button, Card, Spinner, Modal } from 'react-bootstrap';
 import axios from 'axios';
-import ReactYAML from 'react-yaml';
+import { YAMLViewer } from 'react-yaml';
 
 function App() {
   const [input, setInput] = useState('');
@@ -51,7 +51,7 @@ function App() {
         <Card className="mt-4">
           <Card.Body>
             <Card.Title>Gitpod YAML:</Card.Title>
-            <ReactYAML yaml={output} />
+            <YAMLViewer yaml={output} />
           </Card.Body>
         </Card>
       )}
