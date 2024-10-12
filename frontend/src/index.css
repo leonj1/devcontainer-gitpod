@@ -74,6 +74,22 @@ pre {
   color: var(--button-color);
 }
 
+.font-selector {
+  margin-bottom: 20px;
+}
+
+.font-selector label {
+  margin-right: 10px;
+}
+
+.font-selector select {
+  padding: 5px;
+  border-radius: 5px;
+  background-color: var(--input-background);
+  color: var(--text-color);
+  border: 1px solid var(--input-border);
+}
+
 dialog {
   border: none;
   border-radius: 5px;

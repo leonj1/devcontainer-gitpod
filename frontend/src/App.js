@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
+const codingFonts = [
+  'Consolas',
+  'Courier New',
+  'Fira Code',
+  'Inconsolata',
+  'JetBrains Mono',
+  'Menlo',
+  'Monaco',
+  'Source Code Pro',
+  'Ubuntu Mono',
+];
+
 function App() {
   document.body.classList.add('bg-dark', 'text-light');
   const [input, setInput] = useState('');
@@ -9,11 +21,16 @@ function App() {
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [hasResponse, setHasResponse] = useState(false);
+  const [selectedFont, setSelectedFont] = useState('Consolas');
 
   useEffect(() => {
     setOutput('');
     setHasResponse(false);
   }, [input]);
+
+  const handleFontChange = (e) => {
+    setSelectedFont(e.target.value);
+  };
 
   const handleConvert = async (e) => {
     e.preventDefault();
@@ -43,6 +60,21 @@ function App() {
   return (
     <main className="container">
       <h1 className="text-light">Devcontainer to Gitpod Converter</h1>
+      <div className="font-selector">
+        <label htmlFor="font-select">Select Font: </label>
+        <select
+          id="font-select"
+          value={selectedFont}
+          onChange={handleFontChange}
+          className="bg-dark text-light"
+        >
+          {codingFonts.map((font) => (
+            <option key={font} value={font}>
+              {font}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className="converter-container">
         <div className="input-container">
           <h2 className="text-light">devcontainer.json</h2>
@@ -54,6 +86,7 @@ function App() {
               onChange={(e) => setInput(e.target.value)}
               required
               className="bg-dark text-light"
+              style={{ fontFamily: selectedFont }}
             ></textarea>
             <div className="button-container">
               <button type="submit" disabled={loading} className="btn btn-primary">
@@ -66,7 +99,7 @@ function App() {
           <div className="output-container">
             <h2 className="text-light">Gitpod</h2>
             <div className="output-wrapper">
-              <pre className="bg-dark text-light">{output}</pre>
+              <pre className="bg-dark text-light" style={{ fontFamily: selectedFont }}>{output}</pre>
               <CopyToClipboard text={output}>
                 <button className="btn btn-outline-light copy-button">
                   Copy to Clipboard
