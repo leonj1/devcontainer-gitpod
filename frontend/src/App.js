@@ -24,7 +24,7 @@ function App() {
     setLoading(true);
     setError('');
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch('https://devcontainer-api.joseserver.com/convert', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

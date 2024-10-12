@@ -2,7 +2,7 @@
 
 API_CONTAINER_NAME=devcontainer-converter-api
 API_PORT=4343
-API_HOST=10.1.1.144
+API_HOST=devcontainer-api.joseserver.com
 WEB_CONTAINER_NAME=devcontainer-converter-web
 WEB_PORT=4341
 
@@ -16,7 +16,7 @@ build:
 
 run:
 	docker run -d --name $(API_CONTAINER_NAME) -p $(API_PORT):8000 $(API_CONTAINER_NAME)
-	docker run -d --name $(WEB_CONTAINER_NAME) -p $(WEB_PORT):3000 $(WEB_CONTAINER_NAME)
+	docker run -d --name $(WEB_CONTAINER_NAME) -p $(WEB_PORT):3000 -e REACT_APP_API_HOST=$(API_HOST) -e REACT_APP_API_PORT=$(API_PORT) $(WEB_CONTAINER_NAME)
 
 stop:
 	docker stop $(API_CONTAINER_NAME) || true
