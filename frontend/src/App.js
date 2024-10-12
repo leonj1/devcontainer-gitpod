@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-const API_PORT = process.env.REACT_APP_API_PORT || '4343';
-const API_HOST = process.env.REACT_APP_API_HOST || 'localhost';
-const API_URL = `http://${API_HOST}:${API_PORT}/convert`;
-
 function App() {
   document.body.classList.add('bg-dark', 'text-light');
   const [input, setInput] = useState('');
