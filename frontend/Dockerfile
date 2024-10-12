@@ -13,6 +13,12 @@ RUN npm install
 # Copy the current directory contents into the container at /app
 COPY . .
 
+# Set the API_PORT and API_HOST environment variables
+ARG API_PORT
+ARG API_HOST
+ENV REACT_APP_API_PORT=$API_PORT
+ENV REACT_APP_API_HOST=$API_HOST
+
 # Build the app for production
 RUN npm run build
 

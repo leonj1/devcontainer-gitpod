@@ -2,13 +2,17 @@
 
 API_CONTAINER_NAME=devcontainer-converter-api
 API_PORT=4343
+API_HOST=10.1.1.144
 WEB_CONTAINER_NAME=devcontainer-converter-web
 WEB_PORT=4341
+
+export API_PORT
+export API_HOST
 
 # Default target
 build:
 	docker build -t $(API_CONTAINER_NAME) .
-	cd frontend && docker build -t $(WEB_CONTAINER_NAME) .
+	cd frontend && docker build --build-arg API_PORT=$(API_PORT) --build-arg API_HOST=$(API_HOST) -t $(WEB_CONTAINER_NAME) .
 
 run:
 	docker run -d --name $(API_CONTAINER_NAME) -p $(API_PORT):8000 $(API_CONTAINER_NAME)

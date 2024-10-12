@@ -1,71 +1,90 @@
-import React, { useState } from 'react';
-import { Container, Form, Button, Card, Spinner, Modal } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+
+const API_PORT = process.env.REACT_APP_API_PORT || '4343';
+const API_HOST = process.env.REACT_APP_API_HOST || 'localhost';
+const API_URL = `http://${API_HOST}:${API_PORT}/convert`;
 
 function App() {
+  document.body.classList.add('bg-dark', 'text-light');
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [hasResponse, setHasResponse] = useState(false);
 
-  const handleConvert = async () => {
+  useEffect(() => {
+    setOutput('');
+    setHasResponse(false);
+  }, [input]);
+
+  const handleConvert = async (e) => {
+    e.preventDefault();
     setLoading(true);
     setError('');
     try {
-      const response = await axios.post('http://10.1.1.144:4343/convert', JSON.parse(input));
+      const response = await axios.post(API_URL, JSON.parse(input));
       setOutput(response.data);
+      setHasResponse(true);
     } catch (err) {
-      setError(err || 'An error occurred');
+      setError(err.message || 'An error occurred');
       setShowModal(true);
     }
     setLoading(false);
   };
 
   return (
-    <Container className="mt-5">
-      <h1 className="mb-4">Devcontainer to Gitpod Converter</h1>
-      <Form>
-        <Form.Group className="mb-3">
-          <Form.Label>Input devcontainer.json:</Form.Label>
-          <Form.Control
-            as="textarea"
-            rows={10}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-          />
-        </Form.Group>
-        <Button variant="primary" onClick={handleConvert} disabled={loading}>
-          {loading ? (
-            <>
-              <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />{' '}
-              Converting...
-            </>
-          ) : (
-            'Convert'
-          )}
-        </Button>
-      </Form>
-      {output && (
-        <Card className="mt-4">
-          <Card.Body>
-            <Card.Title>Gitpod YAML:</Card.Title>
-            <pre>{output}</pre>
-          </Card.Body>
-        </Card>
+    <main className="container">
+      <h1 className="text-light">Devcontainer to Gitpod Converter</h1>
+      <div className="converter-container">
+        <div className="input-container">
+          <h2 className="text-light">devcontainer.json</h2>
+          <form onSubmit={handleConvert}>
+            <textarea
+              id="input"
+              rows={20}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              required
+              className="bg-dark text-light"
+            ></textarea>
+            <div className="button-container">
+              <button type="submit" disabled={loading} className="btn btn-primary">
+                {loading ? 'Converting...' : 'Convert'}
+              </button>
+            </div>
+          </form>
+        </div>
+        {hasResponse && (
+          <div className="output-container">
+            <h2 className="text-light">Gitpod</h2>
+            <div className="output-wrapper">
+              <pre className="bg-dark text-light">{output}</pre>
+              <CopyToClipboard text={output}>
+                <button className="btn btn-outline-light copy-button">
+                  Copy to Clipboard
+                </button>
+              </CopyToClipboard>
+            </div>
+          </div>
+        )}
+      </div>
+      {showModal && (
+        <dialog open className="bg-dark text-light">
+          <article>
+            <header>
+              <h3>Error</h3>
+            </header>
+            <p>{error}</p>
+            <footer>
+              <button onClick={() => setShowModal(false)} className="btn btn-secondary">Close</button>
+            </footer>
+          </article>
+        </dialog>
       )}
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Error</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{error}</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </Container>
+    </main>
   );
 }
 
