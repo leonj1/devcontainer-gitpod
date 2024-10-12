@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const codingFonts = [
-  'Consolas',
   'Courier New',
+  'Consolas',
   'Fira Code',
   'Inconsolata',
   'JetBrains Mono',
@@ -24,8 +24,8 @@ function App() {
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [hasResponse, setHasResponse] = useState(false);
-  const [selectedFont, setSelectedFont] = useState('Consolas');
-  const [selectedFontSize, setSelectedFontSize] = useState('16px');
+  const [selectedFont, setSelectedFont] = useState('Courier New');
+  const [selectedFontSize, setSelectedFontSize] = useState('12px');
 
   useEffect(() => {
     setOutput('');
