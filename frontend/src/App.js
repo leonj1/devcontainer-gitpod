@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Form, Button, Card, Spinner, Modal } from 'react-bootstrap';
 import axios from 'axios';
-import { YAMLViewer } from 'react-yaml';
 
 function App() {
   const [input, setInput] = useState('');
@@ -14,10 +13,10 @@ function App() {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.post('http://localhost:8000/convert', JSON.parse(input));
+      const response = await axios.post('http://10.1.1.144:4343/convert', JSON.parse(input));
       setOutput(response.data);
     } catch (err) {
-      setError(err.response?.data?.detail || 'An error occurred');
+      setError(err || 'An error occurred');
       setShowModal(true);
     }
     setLoading(false);
@@ -51,7 +50,7 @@ function App() {
         <Card className="mt-4">
           <Card.Body>
             <Card.Title>Gitpod YAML:</Card.Title>
-            <YAMLViewer yaml={output} />
+            <pre>{output}</pre>
           </Card.Body>
         </Card>
       )}
