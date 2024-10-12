@@ -1,6 +1,6 @@
 .PHONY: build run stop
 
-CONTAINER_NAME=devcontainer-converter-frontend
+CONTAINER_NAME=devcontainer-converter-web
 PORT=3000
 
 build:
