@@ -27,11 +27,12 @@ def convert_devcontainer_to_gitpod(devcontainer_json):
                 })
                 logging.info(f"{datetime.now().isoformat()} - Added task to install {feature} version {value['version']}")
             else:
+                version = "latest" if not isinstance(value, dict) or "version" not in value else value["version"]
                 gitpod_yaml["tasks"].append({
                     "name": f"Install {feature}",
-                    "command": f"sudo apt-get update && sudo apt-get install -y {feature}"
+                    "command": f"sudo apt-get update && sudo apt-get install -y {feature}={version}"
                 })
-                logging.info(f"{datetime.now().isoformat()} - Added task to install {feature}")
+                logging.info(f"{datetime.now().isoformat()} - Added task to install {feature} version {version}")
                 
     if "containerEnv" in devcontainer_json:
         logging.info(f"{datetime.now().isoformat()} - Converting containerEnv to tasks")
