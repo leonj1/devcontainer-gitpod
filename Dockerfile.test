@@ -1,0 +1,24 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Create backend package structure
+RUN mkdir -p /app/backend
+
+# Copy requirements and install dependencies
+COPY backend/requirements.txt backend/
+RUN pip install -r backend/requirements.txt && \
+    pip install pytest pytest-mock pytest-cov requests
+
+# Copy the backend code and tests
+COPY backend/ backend/
+
+# Create an empty __init__.py to make the directory a package
+RUN touch backend/__init__.py
+
+# Set Python path to include the backend directory
+ENV PYTHONPATH=/app/backend
+
+# Run tests with coverage from the backend directory
+WORKDIR /app/backend
+CMD ["pytest", "-v", "--cov=.", "--cov-report=term-missing"]

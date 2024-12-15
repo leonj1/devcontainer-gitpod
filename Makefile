@@ -27,4 +27,4 @@ stop:
 restart: stop run
 
 test:
-	cd backend && PYTHONPATH=.. python3 -m pytest -v
+	cd backend && $ docker run --rm devcontainer-gitpod-test
