@@ -34,15 +34,23 @@ def convert_devcontainer_to_gitpod(devcontainer_json):
                 })
                 logging.info(f"{datetime.now().isoformat()} - Added task to install {feature} version {version}")
                 
-    if "containerEnv" in devcontainer_json:
-        logging.info(f"{datetime.now().isoformat()} - Converting containerEnv to tasks")
-        for env, value in devcontainer_json["containerEnv"].items():
+    if "containerEnv" in devcontainer_json or "remoteEnv" in devcontainer_json:
+        logging.info(f"{datetime.now().isoformat()} - Converting environment variables")
+        env_vars = {}
+        
+        if "containerEnv" in devcontainer_json:
+            env_vars.update(devcontainer_json["containerEnv"])
+            logging.info(f"{datetime.now().isoformat()} - Added containerEnv variables")
+            
+        if "remoteEnv" in devcontainer_json:
+            env_vars.update(devcontainer_json["remoteEnv"])
+            logging.info(f"{datetime.now().isoformat()} - Added remoteEnv variables")
+            
+        if env_vars:
             gitpod_yaml["tasks"].append({
-                "env": {
-                    env: value
-                }
+                "env": env_vars
             })
-            logging.info(f"{datetime.now().isoformat()} - Converted containerEnv: {env}={value}")
+            logging.info(f"{datetime.now().isoformat()} - Added combined environment variables to tasks")
 
     # Convert settings
     # if condition to check if the following exists: "customizations": {"vscode": {"settings"}}

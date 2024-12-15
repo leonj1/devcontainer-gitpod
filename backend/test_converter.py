@@ -18,7 +18,13 @@ class TestConverter(unittest.TestCase):
                 }
             },
             "containerEnv": {
-                "MY_ENV_VAR": "my_value"
+                "MY_CONTAINER_VAR": "some-value-here",
+                "MY_CONTAINER_VAR2": "${localEnv:SOME_LOCAL_VAR}"
+            },
+            "remoteEnv": {
+                "PATH": "${containerEnv:PATH}:/some/other/path",
+                "MY_REMOTE_VARIABLE": "some-other-value-here",
+                "MY_REMOTE_VARIABLE2": "${localEnv:SOME_LOCAL_VAR}"
             },
             "postCreateCommand": "pip install -r requirements.txt"
         }
@@ -37,7 +43,11 @@ class TestConverter(unittest.TestCase):
                 },
                 {
                     "env": {
-                        "MY_ENV_VAR": "my_value"
+                        "MY_CONTAINER_VAR": "some-value-here",
+                        "MY_CONTAINER_VAR2": "${localEnv:SOME_LOCAL_VAR}",
+                        "PATH": "${containerEnv:PATH}:/some/other/path",
+                        "MY_REMOTE_VARIABLE": "some-other-value-here",
+                        "MY_REMOTE_VARIABLE2": "${localEnv:SOME_LOCAL_VAR}"
                     }
                 },
                 {
