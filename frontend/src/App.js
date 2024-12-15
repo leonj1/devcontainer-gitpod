@@ -28,7 +28,16 @@ function App() {
         extensions: ["streetsidesoftware.code-spell-checker"]
       }
     },
-    forwardPorts: [3000]
+    forwardPorts: [3000],
+    containerEnv: {
+        MY_CONTAINER_VAR: "some-value-here",
+        MY_CONTAINER_VAR2: "${localEnv:SOME_LOCAL_VAR}"
+    },
+    remoteEnv: {
+        PATH: "${containerEnv:PATH}:/some/other/path",
+        MY_REMOTE_VARIABLE: "some-other-value-here",
+        MY_REMOTE_VARIABLE2: "${localEnv:SOME_LOCAL_VAR}"
+    }
   };
 
   const [input, setInput] = useState(JSON.stringify(defaultConfig, null, 2));
