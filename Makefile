@@ -1,4 +1,4 @@
-.PHONY: build run stop restart
+.PHONY: build run stop restart test
 
 API_CONTAINER_NAME=devcontainer-converter-api
 API_PORT=4343
@@ -25,3 +25,6 @@ stop:
 	docker rm $(WEB_CONTAINER_NAME) || true
 
 restart: stop run
+
+test:
+	cd backend && PYTHONPATH=.. python3 -m pytest -v

@@ -65,3 +65,7 @@ Thumbs.db
 
 # Project specific
 .aider*
+
+run.log
+*.db
+
