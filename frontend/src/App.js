@@ -77,7 +77,17 @@ function App() {
 
   return (
     <main className="container">
-      <h1 className="text-light mb-4">Devcontainer to Gitpod Converter</h1>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="text-light">Devcontainer to Gitpod Converter</h1>
+        <a 
+          href="https://github.com/leonj1/devcontainer-gitpod" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="btn btn-outline-light"
+        >
+          GitHub
+        </a>
+      </div>
 
       <FontControls
         selectedFont={selectedFont}
