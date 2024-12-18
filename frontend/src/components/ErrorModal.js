@@ -22,7 +22,7 @@ export function ErrorModal({ error, onClose }) {
           {error.context && (
             <div className="mb-3">
               <strong>Context:</strong>
-              <pre className="bg-light p-2 mt-1 mb-0 border rounded" style={{ whiteSpace: 'pre-wrap' }}>
+              <pre className="bg-dark text-light p-2 mt-1 mb-0 border border-secondary rounded" style={{ whiteSpace: 'pre-wrap' }}>
                 {error.context}
               </pre>
             </div>
@@ -58,18 +58,24 @@ export function ErrorModal({ error, onClose }) {
   if (!error) return null;
 
   return (
-    <Modal show={true} onHide={onClose} centered>
-      <Modal.Header className="bg-danger text-white">
+    <Modal 
+      show={true} 
+      onHide={onClose} 
+      centered
+      contentClassName="bg-dark text-light"
+      className="dark-theme"
+    >
+      <Modal.Header className="bg-danger text-white border-secondary">
         <Modal.Title>
           <i className="bi bi-exclamation-triangle-fill me-2"></i>
           Error {error.status && `(${error.status})`}
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body className="bg-dark">
         {formatErrorDetails()}
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant="primary" onClick={onClose}>OK</Button>
+      <Modal.Footer className="bg-dark border-secondary">
+        <Button variant="outline-light" onClick={onClose}>OK</Button>
       </Modal.Footer>
     </Modal>
   );
