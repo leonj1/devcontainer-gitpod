@@ -1,13 +1,18 @@
 import logging
-from fastapi import FastAPI, HTTPException, Body
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
 import yaml
 from converter import convert_devcontainer_to_gitpod
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+class DevContainerConfig(BaseModel):
+    """DevContainer configuration model."""
+    name: str = Field(..., description="Name of the devcontainer")
 
 app = FastAPI()
 
@@ -21,9 +26,10 @@ app.add_middleware(
 )
 
 @app.post("/convert", response_class=PlainTextResponse)
-async def convert_to_gitpod(devcontainer_json: dict = Body(...)):
+async def convert_to_gitpod(config: DevContainerConfig):
     logger.info("Received request to convert devcontainer to Gitpod config")
     try:
+        devcontainer_json = config.dict()
         logger.debug(f"Input devcontainer JSON: {devcontainer_json}")
         
         # Convert to Gitpod YAML
