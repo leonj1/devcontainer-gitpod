@@ -3,6 +3,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { FontControls } from './components/FontControls';
 import { ErrorModal } from './components/ErrorModal';
 import { apiStrategy } from './services/api';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const codingFonts = [
   'Courier New',
