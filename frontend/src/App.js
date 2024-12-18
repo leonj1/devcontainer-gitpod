@@ -45,7 +45,7 @@ function App() {
   const [input, setInput] = useState(JSON.stringify(defaultConfig, null, 2));
   const [output, setOutput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(null);
   const [hasResponse, setHasResponse] = useState(false);
   const [selectedFont, setSelectedFont] = useState('Courier New');
   const [selectedFontSize, setSelectedFontSize] = useState('12px');
@@ -68,14 +68,14 @@ function App() {
   const handleConvert = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError(null);
 
     try {
       const data = await apiStrategy.convert(input);
       setOutput(data);
       setHasResponse(true);
     } catch (err) {
-      setError(err.message || 'An error occurred');
+      setError(err); // Pass the entire error object
     }
 
     setLoading(false);
@@ -153,8 +153,9 @@ function App() {
 
         {error && (
           <ErrorModal
+            show={!!error}
             error={error}
-            onClose={() => setError('')}
+            onClose={() => setError(null)}
           />
         )}
       </div>
