@@ -2,6 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 from main import app
 import logging
+import yaml
 
 client = TestClient(app)
 
@@ -62,3 +63,53 @@ class TestConvertToGitpod:
             assert isinstance(error_detail, list), f"{test_name} should return validation errors"
             error_types = [err.get("type", "") for err in error_detail]
             assert expected_error in error_types, f"{test_name} should have error type {expected_error}"
+
+def test_convert_complex_devcontainer():
+    """Test conversion of a complex devcontainer with env vars and extensions."""
+    devcontainer_json = {
+        "image": "mcr.microsoft.com/devcontainers/typescript-node",
+        "customizations": {
+            "vscode": {
+                "extensions": [
+                    "streetsidesoftware.code-spell-checker"
+                ]
+            }
+        },
+        "forwardPorts": [3000],
+        "containerEnv": {
+            "MY_CONTAINER_VAR": "some-value-here",
+            "MY_CONTAINER_VAR2": "${localEnv:SOME_LOCAL_VAR}"
+        },
+        "remoteEnv": {
+            "PATH": "${containerEnv:PATH}:/some/other/path",
+            "MY_REMOTE_VARIABLE": "some-other-value-here",
+            "MY_REMOTE_VARIABLE2": "${localEnv:SOME_LOCAL_VAR}"
+        }
+    }
+
+    response = client.post("/convert", json=devcontainer_json)
+    assert response.status_code == 200
+    
+    # Parse the YAML response to validate structure
+    gitpod_yaml = yaml.safe_load(response.text)
+    
+    # Validate image
+    assert gitpod_yaml["image"] == devcontainer_json["image"]
+    
+    # Validate ports
+    assert gitpod_yaml["ports"] == [{"port": 3000}]
+    
+    # Validate VS Code extensions
+    assert "vscode" in gitpod_yaml
+    assert gitpod_yaml["vscode"]["extensions"] == ["streetsidesoftware.code-spell-checker"]
+    
+    # Validate environment variables
+    assert "env" in gitpod_yaml
+    expected_env = {
+        "MY_CONTAINER_VAR": "some-value-here",
+        "MY_CONTAINER_VAR2": "${SOME_LOCAL_VAR}",  # localEnv prefix is removed
+        "PATH": "${PATH}:/some/other/path",  # containerEnv is simplified
+        "MY_REMOTE_VARIABLE": "some-other-value-here",
+        "MY_REMOTE_VARIABLE2": "${SOME_LOCAL_VAR}"  # localEnv prefix is removed
+    }
+    assert gitpod_yaml["env"] == expected_env
