@@ -113,3 +113,43 @@ def test_convert_complex_devcontainer():
         "MY_REMOTE_VARIABLE2": "${SOME_LOCAL_VAR}"  # localEnv prefix is removed
     }
     assert gitpod_yaml["env"] == expected_env
+
+def test_invalid_json_error():
+    """Test that invalid JSON returns a 422 with detailed error information."""
+    # Test case 1: Invalid JSON with missing quotes
+    invalid_json = """{
+    "image": mcr.microsoft.com/devcontainers/typescript-node,
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "streetsidesoftware.code-spell-checker"
+            ]
+        }
+    }
+}"""
+
+    response = client.post("/convert", content=invalid_json)
+    assert response.status_code == 422
+    
+    error_detail = response.json()
+    assert error_detail["error"] == "Invalid JSON format"
+    assert "message" in error_detail
+    assert error_detail["line_number"] > 0  # Should have line number
+    assert error_detail["column"] > 0  # Should have column number
+    assert "context" in error_detail  # Should show the problematic line
+    assert "mcr.microsoft.com" in error_detail["context"]  # Should show the unquoted string
+    
+    # Test case 2: Invalid JSON with unterminated string
+    response = client.post("/convert", content='{"key": "missing quote}')
+    assert response.status_code == 422
+    error_detail = response.json()
+    assert error_detail["error"] == "Invalid JSON format"
+    assert "Unterminated string" in error_detail["message"]
+    
+    # Test case 3: Empty input
+    response = client.post("/convert", content="")
+    assert response.status_code == 422
+    error_detail = response.json()
+    assert error_detail["error"] == "Invalid JSON format"
+    assert error_detail["message"] == "Empty input"
+    assert error_detail["context"] == "<empty>"
