@@ -15,30 +15,8 @@ class DevcontainerApiStrategy extends ApiStrategy {
     });
     
     if (!response.ok) {
-      const errorData = {
-        status: response.status,
-        message: `Request failed with status ${response.status}`,
-        details: null
-      };
-
-      try {
-        // Try to parse error details from response
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          errorData.details = await response.json();
-          if (errorData.details.detail) {
-            errorData.message = Array.isArray(errorData.details.detail) 
-              ? errorData.details.detail[0].msg 
-              : errorData.details.detail;
-          }
-        } else {
-          errorData.details = await response.text();
-        }
-      } catch (parseError) {
-        console.error('Error parsing error response:', parseError);
-      }
-
-      throw errorData;
+      const errorData = await response.json();
+      throw errorData; // Throw the error response directly
     }
     
     return response.text();
