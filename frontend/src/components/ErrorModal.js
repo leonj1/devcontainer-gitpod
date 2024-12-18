@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
-const ErrorModal = ({ show, onClose, error }) => {
+export const ErrorModal = ({ show, onClose, error }) => {
   const formatErrorMessage = (error) => {
     if (!error) return 'An unknown error occurred';
     
@@ -38,5 +38,3 @@ const ErrorModal = ({ show, onClose, error }) => {
     </Modal>
   );
 };
-
-export default ErrorModal;
