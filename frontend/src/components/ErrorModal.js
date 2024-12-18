@@ -1,52 +1,76 @@
 import React from 'react';
+import { Modal, Button } from 'react-bootstrap';
 
 export function ErrorModal({ error, onClose }) {
+  const formatErrorDetails = () => {
+    if (!error) return null;
+
+    // Handle JSON validation errors
+    if (error.error === "Invalid JSON format") {
+      return (
+        <div>
+          <div className="mb-3">
+            <strong className="text-danger">
+              <i className="bi bi-exclamation-triangle-fill me-2"></i>
+              {error.error}
+            </strong>
+          </div>
+          <div className="mb-3">
+            <div><strong>Problem:</strong> {error.message}</div>
+            <div><strong>Location:</strong> Line {error.line_number}, Column {error.column}</div>
+          </div>
+          {error.context && (
+            <div className="mb-3">
+              <strong>Context:</strong>
+              <pre className="bg-light p-2 mt-1 mb-0 border rounded" style={{ whiteSpace: 'pre-wrap' }}>
+                {error.context}
+              </pre>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // Handle other types of errors
+    return (
+      <div>
+        <div className="mb-3">
+          <strong className="text-danger">
+            <i className="bi bi-x-circle-fill me-2"></i>
+            Error {error.status && `(${error.status})`}
+          </strong>
+        </div>
+        <div className="mb-3">
+          <div><strong>Error Message:</strong> {error.message}</div>
+        </div>
+        {error.details && (
+          <div className="mb-3">
+            <strong>Details:</strong>
+            <pre className="bg-light p-2 mt-1 mb-0 border rounded" style={{ whiteSpace: 'pre-wrap' }}>
+              {JSON.stringify(error.details, null, 2)}
+            </pre>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   if (!error) return null;
 
   return (
-    <div className="modal d-block" tabIndex="-1" role="dialog">
-      <div className="modal-dialog" role="document">
-        <div className="modal-content">
-          <div className="modal-header bg-danger text-white">
-            <h5 className="modal-title">
-              <i className="bi bi-exclamation-triangle-fill me-2"></i>
-              Error {error.status && `(${error.status})`}
-            </h5>
-            <button 
-              type="button" 
-              className="btn-close btn-close-white" 
-              onClick={onClose} 
-              aria-label="Close"
-            />
-          </div>
-          <div className="modal-body">
-            <div className="d-flex align-items-center mb-3">
-              <i className="bi bi-x-circle-fill text-danger fs-1 me-3"></i>
-              <div>
-                <h6 className="mb-1">Error Message:</h6>
-                <p className="mb-0">{error.message}</p>
-              </div>
-            </div>
-            {error.details && (
-              <div className="mt-3">
-                <h6>Details:</h6>
-                <pre className="bg-light p-2 rounded">
-                  {JSON.stringify(error.details, null, 2)}
-                </pre>
-              </div>
-            )}
-          </div>
-          <div className="modal-footer">
-            <button 
-              type="button" 
-              className="btn btn-primary" 
-              onClick={onClose}
-            >
-              OK
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Modal show={true} onHide={onClose} centered>
+      <Modal.Header className="bg-danger text-white">
+        <Modal.Title>
+          <i className="bi bi-exclamation-triangle-fill me-2"></i>
+          Error {error.status && `(${error.status})`}
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {formatErrorDetails()}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="primary" onClick={onClose}>OK</Button>
+      </Modal.Footer>
+    </Modal>
   );
 }
