@@ -22,7 +22,7 @@ on:
 
 jobs:
   review:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     steps:
       - uses: presubmit/ai-reviewer@latest
         env:
